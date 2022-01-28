@@ -4,7 +4,9 @@ const {
     getUserById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    addFriend,
+    deleteFriend
   } = require('../../controllers/user-controller');
   
   // /api/users
@@ -21,13 +23,15 @@ const {
     .delete(deleteUser);
   
     
-    //  /api/users/:userId/friends/:friendsId
+    //  /api/users/:userId/friends
     router
-    .post(createFriend) 
-    .delete(deleteFriends);  
+    .route('/:userId/friends/:friendId')
+    .put(addFriend)
+    .delete(deleteFriend);
+  
     
     
   module.exports = router;
 
   // BONUS: Remove a user's associated thoughts when deleted. 
-  // Challenge yourself here... (location 22-23)
+  // Challenge yourself here... 
