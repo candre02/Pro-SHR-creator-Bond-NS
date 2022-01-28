@@ -9,12 +9,12 @@ const ReactionSchema = new Schema(
         },
         reactionBody: {
             type: String,
-            required: 'blah',
+            required: true,
             maxlength: 280 
         },
         username: {
             type: String,
-            required: 'Username is Required'
+            required: true
         },
         createdAt: {
             type: Date,
@@ -36,23 +36,21 @@ const ThoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
-            maxlength: 280,
-            minlength: 1        
+            minlength: 1, 
+            maxlength: 280                
     },
 
         createdAt: {
             type: Date,
-            default: Date.now, // Set default value to the current timestamp
-            get: (createdAtVal) => dateFormart(createdAtVal) // Use a getter method to format the timestamp on query
+            default: Date.now, 
+            get: (createdAtVal) => dateFormart(createdAtVal) 
     },
 
-        username: { // The username that created this thought
+        username: { 
             type: String,
-            trim: true,
-            required: 'Username that created this thought is Required' 
+            required: true 
     },
-         // these are like replies
-        // Array of nested documents created with the `reactionSchema`
+         // use reactionSchema to validate data for reactions
         reactions: [ReactionSchema]
 },
 {
@@ -66,7 +64,7 @@ const ThoughtSchema = new Schema(
    
     
 ThoughtSchema.virtual('reactionCount').get(function() {
-    return this.replies.length;
+    return this.reactions.length;
 });
 
 const Thought = model('Thought', ThoughtSchema);
