@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const { Thought } = require('.');
 const dateFormat = require('../utils/dateFormat');
 
 const UserSchema = new Schema({
@@ -7,7 +6,7 @@ const UserSchema = new Schema({
         type: String,
         trim: true,
         unique: true,
-        required: 'Username is Required'
+        required: true
     },
 
     email: {
@@ -15,7 +14,12 @@ const UserSchema = new Schema({
         unique: true,
         required: true,
         match: [/.+@.+\..+/]  
-        // for line 14 Must match a valid email address (look into Mongoose's matching validation)
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (createdAtVal) => dateFormat(createdAtVal) 
     },
 
     thoughts: [
@@ -23,9 +27,7 @@ const UserSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Thought"
         }
-    ] 
-
-,
+    ],
 
     friends: [
         {
@@ -36,6 +38,7 @@ const UserSchema = new Schema({
 },
 {
     toJSON: {
+        // communicating to mongoose we have virtuals and getters
         virtuals: true,
         getters: true
     },
@@ -44,11 +47,9 @@ const UserSchema = new Schema({
 );
 
 // get total count of friends and replies on retrieval the length of the users friends array field on query.
-UserSchema.virtual('friendCount').get(function() {
-    return this.thoughts.reduce(
-        (total, thought) => total + thought.replies.length + 1, 0
-    );    
-});
+UserSchema.virtual('friendCount').get(function () {
+    return this.friends.length;
+  });
 
 // create the User model using the UserSchema
 const User = model('User', UserSchema);
