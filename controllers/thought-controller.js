@@ -12,7 +12,7 @@ const thoughtController = {
         });
       },
 
-      // get by single thought id
+      // get a single thought by its id
       getThoughtById({ params }, res) {
         Thought.findOne({ _id: params.id })
              // (- symbol stands for no and __v stating to not to choose)
@@ -30,16 +30,15 @@ const thoughtController = {
             });
     },
       
-  // add thought to user
-  addThought({ params, body }, res) {
-    console.log(params);
+  // create a new thought
+  addThought({ body }, res) {
     Thought.create(body)
       .then(({ _id }) => {
         return User.findOneAndUpdate(
           // identifies the user based on the user id
-          { _id: params.userId },
+          { _id: body.userId },
           // updates the thought, ref id to the user model
-          { $push: { comments: _id } },
+          { $push: { thoughts: _id } },
           { new: true }
         );
       })
@@ -54,13 +53,11 @@ const thoughtController = {
       .catch(err => res.json(err));
   },
 
-  // add Reaction
+  // add a reaction
   addReaction({ params, body }, res) {
     Thought.findOneAndUpdate(
-      // this is linked to thought.js in api routes
       { _id: params.thoughtId },
-      // $push adds a reaction to the array
-      { $push: { reaction: body } },
+      { $addToSet: { reactions: body } },
       { new: true, runValidators: true }
     )
       .then(dbUserData => {
@@ -73,7 +70,7 @@ const thoughtController = {
       .catch(err => res.json(err));
   },
 
-    // remove reation
+    // remove a reaction by the reaction's id value
     removeReaction({ params }, res) {
       Thought.findOneAndUpdate(
         { _id: params.thoughtId },
@@ -85,7 +82,25 @@ const thoughtController = {
         .catch(err => res.json(err));
 },
 
-  // remove thought
+// Put (update) thought by its id 
+updateThought({ params, body }, res) {
+  console.log("Update", body ); 
+    Thought.findOneAndUpdate(
+      { _id: params.thoughtId }, {$set: body},
+      { new: true, runValidators: true })
+      .then(dbThoughtData => {
+        if (!dbThoughtData) {
+          res.status(404)
+            .json({ message: `No thought found with id: ${params.thoughtId}` });
+          return;
+        }
+        console.log(dbThoughtData);
+        res.json(dbThoughtData);
+      })
+      .catch(err => res.json(err));
+  },
+
+  // delete a thought by its id
   removeThought({ params }, res) {
     Thought.findOneAndDelete({ _id: params.thoughtId })
       .then(deletedThought => {

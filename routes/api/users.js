@@ -26,7 +26,7 @@ const {
     //  /api/users/:userId/friends
     router
     .route('/:userId/friends/:friendId')
-    .put(addFriend)
+    .post(addFriend)
     .delete(deleteFriend);
   
     
