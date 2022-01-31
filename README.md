@@ -17,7 +17,5 @@ The user would need to use the following dependencies to install this app, which
 In order for the application to be used, the user would need the command-line, mongodb and npm. 
 Then user would need to install insomnia to check if all the routes functionality work properly.
 
-
-
 ## Contact 
 * Github: [candre02](https://www.github.com/candre02)
