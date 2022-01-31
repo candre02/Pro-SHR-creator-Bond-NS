@@ -9,7 +9,6 @@
 This is a back-end API for social network web application where users can share their thoughts, 
 react to friends' thoughts, and create a friend list. 
 
-
 ## Installation
 The user would need to use the following dependencies to install this app, which are: express and mongoose.
 
